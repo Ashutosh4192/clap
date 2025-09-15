@@ -1,6 +1,6 @@
 import { Inngest } from "inngest";
 import { connect } from "mongoose";
-import { connectDB } from "./db";
+import { connectDB } from "./db.js";
 import User from "../models/user.model.js";
 
 export const inngest = new Inngest({ id: "clap" });
