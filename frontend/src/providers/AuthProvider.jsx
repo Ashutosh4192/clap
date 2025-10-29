@@ -33,7 +33,7 @@ export default function AuthProvider({ children }) {
       }
     );
 
-    // cleanup function to remove the interceptor, this is important to avoid memory leaks
+    // cleanup function to remove the interceptor, to avoid memory leaks
     return () => axiosInstance.interceptors.request.eject(interceptor);
   }, [getToken]);
 

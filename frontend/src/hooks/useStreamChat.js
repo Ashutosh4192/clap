@@ -14,7 +14,7 @@ export const useStreamChat = () => {
   const { user } = useUser();
   const [chatClient, setChatClient] = useState(null);
 
-  // fetch stream token using react-query
+  // fetching stream token using react-query
   const {
     data: tokenData,
     isLoading,

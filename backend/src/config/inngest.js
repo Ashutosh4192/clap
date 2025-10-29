@@ -1,8 +1,11 @@
 import { Inngest } from "inngest";
-import { connect } from "mongoose";
 import { connectDB } from "./db.js";
 import { User } from "../models/user.model.js";
-import { upserStramUser } from "./stream.js";
+import {
+  addUserToPublicChannels,
+  deleteStreamUser,
+  upsertStreamUser,
+} from "./stream.js";
 
 export const inngest = new Inngest({ id: "clap" });
 
@@ -11,6 +14,7 @@ const syncUser = inngest.createFunction(
   { event: "clerk/user.created" },
   async ({ event }) => {
     await connectDB();
+
     const { id, email_addresses, first_name, last_name, image_url } =
       event.data;
 
@@ -23,11 +27,13 @@ const syncUser = inngest.createFunction(
 
     await User.create(newUser);
 
-    await upserStramUser({
+    await upsertStreamUser({
       id: newUser.clerkId.toString(),
       name: newUser.name,
       image: newUser.image,
     });
+
+    await addUserToPublicChannels(newUser.clerkId.toString());
   }
 );
 
@@ -39,7 +45,7 @@ const deleteUserFromDB = inngest.createFunction(
     const { id } = event.data;
     await User.deleteOne({ clerkId: id });
 
-    await deleteStramUser(id.toString());
+    await deleteStreamUser(id.toString());
   }
 );
 
